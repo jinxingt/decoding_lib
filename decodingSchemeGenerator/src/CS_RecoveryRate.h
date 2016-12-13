@@ -41,7 +41,7 @@ private:
 int CSRecoveryRate::doRecovery(vector<int> cols, RecoveryRateResult& result){
 	//to do. use cache to return a scheme. whether to use group*?
 	CS_CodingSchemeRecoveryKey key(cols, 0);
-	CSRecoveryResult res = coding_scheme.columnsLostRecovery(key);
+	CS_RecoveryResult res = coding_scheme.columnsLostRecovery(key);
 	if (res.canRecovery()) result.recovery_total++;
 	result.total++;
 	result.total_cost += res.cost;

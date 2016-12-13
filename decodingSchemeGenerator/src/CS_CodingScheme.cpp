@@ -34,10 +34,14 @@ vector < vector<Point> > _emptyRecoverySchemeValue;
 
 
 //return: INT_MAX for can not recovery. others means recovery cost
-CSRecoveryResult CS_CodingScheme::columnsLostWithRecoveryFunc(vector<int>& cols, PFuncRecovery pfunc)
+CS_RecoveryResult CS_CodingScheme::columnsLostRecovery(CS_CodingSchemeRecoveryKey& key)
 {
-	vector<Point> lost_points;
+	vector<int> & cols = key.cols;
+	CS_RecoveryAlgMgr& mgr = CS_RecoveryAlgMgr::getMgr();
 
+	//do recovery
+
+	vector<Point> lost_points;
 	//set
 	for (int p = 0; p < row - shorten_row; p++){
 		for (int q : cols)
@@ -53,13 +57,10 @@ CSRecoveryResult CS_CodingScheme::columnsLostWithRecoveryFunc(vector<int>& cols,
 	global_mg.print();
 #endif
 	//process
-	CSRecoveryResult result;
+	CS_RecoveryResult result;
 	struct timeval start, end;
 	gettimeofday(&start, NULL);
-	if (algorithm == 4)
-	{
-	}
-	result = (*pfunc)(lost_points, matrix);
+	result = mgr.tryRecovery((CSRecoveryAlgorithmType)key.algorithm, lost_points, matrix);
 	int cost = result.cost;
 	gettimeofday(&end, NULL);
 	long timediff = timeDiffMacroSeconds(start, end);
@@ -97,32 +98,6 @@ CSRecoveryResult CS_CodingScheme::columnsLostWithRecoveryFunc(vector<int>& cols,
 	}
 	return result;
 }
-CSRecoveryResult CS_CodingScheme::columnsLostRecovery(CS_CodingSchemeRecoveryKey& key)
-{
-	PFuncRecovery pfunc = NULL;
-	switch (key.algorithm){
-	case 0:
-		pfunc = enumerationRecovery;
-		break;
-	case 1:
-		pfunc = greedyRecoverySlow;
-		break;
-	case 2:
-		pfunc = greedyRecoveryFast;
-		break;
-	case 3:
-		pfunc = enumerationRecoveryFast;
-		break;
-	case 4:
-		pfunc = userdefinedRecovery;
-	default:
-		printf("Error, unknown algorithm %d\n", algorithm);
-		break;
-	}
-	return columnsLostWithRecoveryFunc(key.cols, pfunc);
-	
-}
-
 /******************************
 外部公共函数，用来重置编码方式
 *******************************/

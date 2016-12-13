@@ -15,5 +15,6 @@ int gettimeofday(struct timeval *tp, void *tzp);
 
 extern long timeDiffMacroSeconds(timeval& start, timeval& end);
 extern char* timeFormatMacroToString(long cost);
-
+extern long timeDiffMilliSeconds(timeval& start, timeval& end);
+long timeDiffSeconds(timeval& start, timeval& end);
 #endif

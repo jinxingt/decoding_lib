@@ -51,7 +51,7 @@ public:
 	
 	//单故障的预先存储
 	void generateSingleFailureScheme(CS_CodingSchemeKey& key){
-		int algorithm = 0;//默认采用遍历算法生成单故障最优，后面可根据配置文件进行生成
+		int algorithm = key.algorithm;//默认采用遍历算法生成单故障最优，后面可根据配置文件进行生成
 		for (int i = 0; i < k+m; ++i)
 		{
 			vector<int> vi{i};	
@@ -107,7 +107,7 @@ public:
 	}
 public:
 	void reset(CSCodingSchemeType type, int row, int k, int m, int shorten_row = 0, int shorten_col = 0);
-	CSRecoveryResult columnsLostRecovery(CS_CodingSchemeRecoveryKey& key);
+	CS_RecoveryResult columnsLostRecovery(CS_CodingSchemeRecoveryKey& key);
 
 	CS_CodingSchemeRecoveryValue columnsLostRecoveryScheme(vector<int>& cols, int algorithm){
 		CS_CodingSchemeRecoveryKey key(cols, algorithm);
@@ -115,7 +115,7 @@ public:
 	}
 	//what to store in cache? maybe group
 	CS_CodingSchemeRecoveryValue columnsLostRecoveryScheme(CS_CodingSchemeRecoveryKey& key){
-		CSRecoveryResult res = columnsLostRecovery(key);
+		CS_RecoveryResult res = columnsLostRecovery(key);
 		CS_CodingSchemeRecoveryValue csr;
 		if (!res.canRecovery()) return csr;
 
@@ -129,8 +129,6 @@ public:
 		return csr;
 	}
 private:
-	CSRecoveryResult columnsLostWithRecoveryFunc(vector<int>& cols, PFuncRecovery pfunc);
-
 	void set_shorten(short shorten_row, short shorten_col);
 	void set_shorten_std_RDP(short shorten_row, short shorten_col);
 	void set_shorten_nonstd_RDP(short shorten_row, short shorten_col);

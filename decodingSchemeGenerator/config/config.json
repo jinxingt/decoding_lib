@@ -7,7 +7,7 @@
             "m": 2,
             "shorten_row": 0,
             "shorten_col": 0,
-            "algorithm": 0,
+            "algorithm": 32,
             "is_single_fail": false,
             "is_default": false
         }

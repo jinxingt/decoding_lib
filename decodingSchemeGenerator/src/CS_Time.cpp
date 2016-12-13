@@ -25,6 +25,12 @@ int gettimeofday(struct timeval *tp, void *tzp)
 long timeDiffMacroSeconds(timeval& start, timeval& end){
 	return (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
 }
+long timeDiffMilliSeconds(timeval& start, timeval& end){
+	return (end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000;
+}
+long timeDiffSeconds(timeval& start, timeval& end){
+	return (end.tv_sec - start.tv_sec);
+}
 char* timeFormatMacroToString(long cost){
 	static char buf[256];
 	if (cost >= 1000 * 1000 * 60){

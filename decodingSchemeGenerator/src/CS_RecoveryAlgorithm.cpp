@@ -121,10 +121,22 @@ rdor.exe 8 3 0 0 0 0   运行时间3.213s
 第四次优化，将从map元素中取出elem的操作过程修改一下，利用了iterator，运行时间变为1.50s 降低一半
 */
 int _enumerationRecoverySearching(vector<Point>& points, int i, unordered_map<Elem*, int>& elemunordered_map, vector<Group*>& recoveryGrp, int& minCost,
-	unordered_map<Elem*, int>& minunordered_map, vector<Group*>& minGroup, Elem matrix[][MAX_COL]){
+	unordered_map<Elem*, int>& minunordered_map, vector<Group*>& minGroup, Elem matrix[][MAX_COL], struct timeval begin, long timeOutSeconds){
 	//construct an array of identiy which parity is used something like "ppppqqqrrr"
 
-	if (i == points.size()){
+	//这会调用的极其频繁
+	if (timeOutSeconds != -1)
+	{
+		struct timeval end;
+		gettimeofday(&end, NULL);
+		if (timeDiffSeconds(begin, end) >= timeOutSeconds)
+		{
+			minCost = INT_MAX;
+			return INT_MAX;
+		}
+	}
+
+	if (i == points.size()){	
 		if (minCost > elemunordered_map.size()){
 			minCost = elemunordered_map.size();
 			minunordered_map = elemunordered_map;
@@ -148,7 +160,7 @@ int _enumerationRecoverySearching(vector<Point>& points, int i, unordered_map<El
 		}
 		recoveryGrp.push_back(gp);
 		//next iteration recursive
-		_enumerationRecoverySearching(points, i + 1, elemunordered_map, recoveryGrp, minCost, minunordered_map, minGroup, matrix);
+		_enumerationRecoverySearching(points, i + 1, elemunordered_map, recoveryGrp, minCost, minunordered_map, minGroup, matrix, begin, timeOutSeconds);
 		//not use it for recovery
 		for (int i = 0; i < ve.size(); ++i)
 		{
@@ -169,12 +181,14 @@ int _enumerationRecoverySearching(vector<Point>& points, int i, unordered_map<El
 	}
 }
 //暴力搜索-遍历恢复
-CSRecoveryResult enumerationRecovery(vector<Point>& points, Elem matrix[][MAX_COL]){
+CS_RecoveryResult enumerationRecovery(vector<Point>& points, Elem matrix[][MAX_COL], long timeOutSeconds){
 	unordered_map<Elem*, int> elemunordered_map;
 	vector<Group*> recoveryGrp;
-	CSRecoveryResult result;
+	CS_RecoveryResult result;
 
-	_enumerationRecoverySearching(points, 0, elemunordered_map, recoveryGrp, result.cost, result.elemunordered_map, result.recoveryGrp, matrix);
+	struct timeval s;
+	gettimeofday(&s, NULL);
+	_enumerationRecoverySearching(points, 0, elemunordered_map, recoveryGrp, result.cost, result.elemunordered_map, result.recoveryGrp, matrix, s, timeOutSeconds);
 	recoveryAlgorithmResult(result.elemunordered_map, result.recoveryGrp);
 	return result;
 }
@@ -239,7 +253,7 @@ int _enumerationRecoverySearchingFast(vector<Point>& points, int i, int matrixCo
 	}
 }
 //暴力搜索-遍历恢复
-CSRecoveryResult enumerationRecoveryFast(vector<Point>& points, Elem matrix[][MAX_COL]){
+CS_RecoveryResult enumerationRecoveryFast(vector<Point>& points, Elem matrix[][MAX_COL]){
 	unordered_map<Elem*, int> elemunordered_map;
 	vector<Group*> recoveryGrp;
 	int curCost = 0;
@@ -248,7 +262,7 @@ CSRecoveryResult enumerationRecoveryFast(vector<Point>& points, Elem matrix[][MA
 	int matrixCost[MAX_ROW][MAX_COL];
 	memset(matrixCost, 0, sizeof(matrixCost));
 
-	CSRecoveryResult result;
+	CS_RecoveryResult result;
 	
 
 	_enumerationRecoverySearchingFast(points, 0, matrixCost, recoveryGrp, result.cost, curCost, result.recoveryGrp, matrix);
@@ -397,8 +411,8 @@ int _greedyComputeCostForOneCycle(vector<Point> points, unordered_map<Elem*, int
 	return elemunordered_map.size();
 }
 //每次都是从所有的故障单元的所有校验组中选择一个故障单元，然后再选择下一个故障单元
-CSRecoveryResult greedyRecoverySlow(vector<Point>& points, Elem matrix[][MAX_COL]){
-	CSRecoveryResult result;
+CS_RecoveryResult greedyRecoverySlow(vector<Point>& points, Elem matrix[][MAX_COL]){
+	CS_RecoveryResult result;
 	unordered_map<Elem*, int> &elemunordered_map = result.elemunordered_map;
 	int minCost = result.cost;
 
@@ -526,8 +540,8 @@ int _greedyComputeCostDescentFast(vector<Point> points, unordered_map<Elem*, int
 	}
 	return elemunordered_map.size();
 }
-CSRecoveryResult greedyRecoveryFast(vector<Point>& points, Elem matrix[][MAX_COL]){
-	CSRecoveryResult result;
+CS_RecoveryResult greedyRecoveryFast(vector<Point>& points, Elem matrix[][MAX_COL]){
+	CS_RecoveryResult result;
 	unordered_map<Elem*, int> &elemunordered_map = result.elemunordered_map;
 	int &minCost = result.cost;
 
@@ -550,11 +564,11 @@ CSRecoveryResult greedyRecoveryFast(vector<Point>& points, Elem matrix[][MAX_COL
 }
 
 //用户定义的恢复策略，需要提供类似于ppppqqqqrrrr这样的字符串 recoveryStr
-CSRecoveryResult userdefinedRecovery(vector<Point>& points, Elem matrix[][MAX_COL]){
+CS_RecoveryResult userdefinedRecovery(vector<Point>& points, Elem matrix[][MAX_COL]){
 	extern char* g_RecoveryStr;
 	char* recoveryStr = g_RecoveryStr;
 
-	CSRecoveryResult result;
+	CS_RecoveryResult result;
 
 	int &minCost = result.cost, curCost = 0;
 	//初始化剪枝，遍历最少可以达到0.3的节省，没什么提升，不再使用
@@ -599,4 +613,36 @@ CSRecoveryResult userdefinedRecovery(vector<Point>& points, Elem matrix[][MAX_CO
 	}
 	recoveryAlgorithmResult(minunordered_map, minGroup);
 	return result;
+}
+
+
+/*************************************
+RecoveryMgr类的方法
+**********************************************/
+void CS_RecoveryAlgMgr::installDefault()
+{
+		install(CSRecoveryAlgorithmTypeSearch, new CS_SearchRecovery());
+		install(CSRecoveryAlgorithmTypeEnumeration, new CS_SearchRecoveryEnumeration());
+
+		install(CSRecoveryAlgorithmTypeGreedy, new CS_SearchRecoveryGreedy());
+		install(CSRecoveryAlgorithmTypeGreedySlow, new CS_SearchRecoveryGreedySlow());
+		install(CSRecoveryAlgorithmTypeGreedyFast, new CS_SearchRecoveryGreedyFast());
+		install(CSRecoveryAlgorithmTypeGreedyRandom, new CS_SearchRecoveryGreedyRandom());
+
+		install(CSRecoveryAlgorithmTypeUserDefined, new CS_UniqueRecovery());
+}
+
+//TODO
+const char* getAlgTypeName(CSRecoveryAlgorithmType type){
+	switch (type){
+	case CSRecoveryAlgorithmTypeSearch: return "CSRecoveryAlgorithmTypeSearch";
+	case CSRecoveryAlgorithmTypeEnumeration: return "CSRecoveryAlgorithmTypeEnumeration";
+	case CSRecoveryAlgorithmTypeGreedy: return "CSRecoveryAlgorithmTypeGreedy";
+	case CSRecoveryAlgorithmTypeGreedyFast: return "CSRecoveryAlgorithmTypeGreedyFast";
+	case CSRecoveryAlgorithmTypeGreedyRandom: return  "CSRecoveryAlgorithmTypeGreedyRandom";
+	case CSRecoveryAlgorithmTypeGreedySlow: return "CSRecoveryAlgorithmTypeGreedySlow";
+	case CSRecoveryAlgorithmTypeUserDefined: return "CSRecoveryAlgorithmTypeUserDefined";
+	default:
+		return "Unknown ALG type";
+	}
 }

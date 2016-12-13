@@ -31,7 +31,12 @@ struct Elem{
 		os << i << "," << j;
 	}
 	void unserialize(istream& is){
-		is >> i >> "," >> j;
+		char c;
+		is >> i >> c >> j;
+	}
+public:
+	Elem(): i(0), j(0), cost(0), is_lost(0), magic(0){
+
 	}
 };
 struct Point{

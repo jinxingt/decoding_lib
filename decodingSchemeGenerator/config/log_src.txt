@@ -1,0 +1,48 @@
+1,程序架构
+	ast_log -> log_msg list -> ThreadFunc get msg -> send msg to different channels -> put them according to channel type
+	1,待打印日志进入log_msg链表
+	2,线程函数从链表从取出log_msg消息
+	3,遍历所有的日志通道
+	4,根据日志通道的类型将log_msg写入到通道的文件描述符中
+2,具体分析获取日志消息并打印的过程
+	2.1,init_logger
+		1,ast_pthread_create // create thread
+		2,ast_mkdir // create log dir
+		3,init_logger_chain // create log channels
+	2.2,logger_thread
+		1,for (;;) // cycle all the time
+		2,AST_LIST_FIRST(&logmsgs);
+		3,while ((msg = next))  // traverse all log_msg structure
+		4,next = AST_LIST_NEXT(msg, list);
+		5,logger_print_normal(msg);  // print msg
+		6,ast_free(msg);
+	2.3,logger_print_normal(log_msg)
+		1,AST_RWLIST_TRAVERSE(&logchannels, chan, list)  // traverse all log channels fds
+		2,ast_log_vsyslog(logmsg);  // to syslog
+		3,ast_console_puts_mutable(buf, logmsg->level); // to console
+		4,fflush(chan->fileptr);  //to file
+	2.4,ast_log_vsyslog // to syslog
+		1,ast_syslog_priority_from_loglevel
+		2,syslog
+	2.5,ast_console_puts_mutable(string, level) // to console log
+		1,fputs(string, stdout);
+		2,fflush(stdout);
+		3,ast_network_puts_mutable(string, level); // log all attached console clients
+	2.6,fflush(chan->fileptr);  // to file log
+3,具体分析传送日志到日志链表的过程
+	3.1,ast_log
+		向队列尾部加入msg消息
+4,遇到的一些函数
+	4.1,ast_logger_register_level
+		可以注册大于16的水平的，非空的，不与原来已经注册的重名的日志规格
+	4.2,update_logchannels
+		遍历所有通道，设置通道的对应掩码
+	4.3,make_components
+		遍历传入的日志级别，逐个和日志级别数组比较，设置对应的日志级别掩码规则
+	4.4,init_logger_chain
+		载入配置文件，清除原来所有的日志通道，根据配置文件设置对应的信息构造logchannel的基本属性
+	4.5,make_logchannel
+		根据配置文件var->name, var->value, var->lineno，创建对应的日志通道(full => debug, warning, error)
+	4.6,ast_backtrace
+		堆栈跟踪
+		

@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="log">
+      <UniqueIdentifier>{be8c1c4c-84f9-4a59-82ea-c2446b12b44f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{0743aacf-c02d-401d-be0a-14cde195ba32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{0a22396f-d5b2-4cda-b8f9-5db69f7a08bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3ee13138-7da8-4033-9c1a-fefd17736dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log\src">
+      <UniqueIdentifier>{2eaa7047-cf32-481a-875e-5b1699b0c3bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="json\src\jsoncpp.cpp">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CS_CodingScheme.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CS_RecoveryAlgorithm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CS_RecoveryRate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CS_Time.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\piterCode-final.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\LogChannel.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\LogClient.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\LogControl.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\LogMessage.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\rtcsbaseobject.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\rtcsprofile.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+    <ClCompile Include="log\src\test_log.cpp">
+      <Filter>log\src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="json.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="log\TLog.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_CodingScheme.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_Common.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_Config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_Group.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_RecoveryAlgorithm.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_RecoveryRate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CS_Time.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\LogChannel.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\LogClient.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\LogCommon.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\LogControl.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\LogMessage.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcs.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcsbaseobject.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcscstring.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcserror.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcsgor.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\rtcstype.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+    <ClInclude Include="log\src\syslog.h">
+      <Filter>log\src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\log_prof.ini">
+      <Filter>config</Filter>
+    </None>
+    <None Include="config\config.json">
+      <Filter>config</Filter>
+    </None>
+  </ItemGroup>
+</Project>
